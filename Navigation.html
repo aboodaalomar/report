@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Identity Security Report</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --blue: #2563eb;
+            --purple: #7e22ce;
+            --red: #dc2626;
+            --green: #10b981;
+            --orange: #f97316;
+            --bg: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            display: flex;
+            background: var(--bg);
+            color: #1e293b;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        nav h2 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            text-align: left;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            transition: 0.2s;
+        }
+
+        nav button:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        nav button.active {
+            background: var(--blue);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Content Area */
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .page {
+            display: none;
+
+            margin: 0 auto;
+
+
+
+
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* Components */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            border: 1px solid var(--slate-200);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .kpi-val {
+            font-size: 2rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .matrix-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+
+        .matrix-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--slate-200);
+            vertical-align: top;
+            font-size: 0.85rem;
+        }
+
+        .swot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .swot-box {
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .swot-s {
+            background: #dcfce7;
+        }
+
+        .swot-w {
+            background: #fee2e2;
+        }
+
+        /* Timeline Fix */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 80px 0;
+            padding: 0 10px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--slate-200);
+            z-index: 1;
+        }
+
+        .t-node {
+            position: relative;
+            z-index: 2;
+            width: 20%;
+            text-align: center;
+        }
+
+        .t-dot {
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--slate-200);
+        }
+
+        .t-info {
+            position: absolute;
+            width: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+        }
+
+        .t-top {
+            bottom: 25px;
+        }
+
+        .t-bottom {
+            top: 25px;
+        }
+
+        .cite {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-style: italic;
+            vertical-align: super;
+        }
+
+        /* Mobile Toggle Button (Default Hidden) */
+        .mobile-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--slate-700);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: auto;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                overflow: auto;
+            }
+
+            nav {
+                width: 100%;
+                padding: 15px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                border-bottom: 2px solid #334155;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            /* Container for Title + Toggle */
+            .nav-header {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            nav h2 {
+                display: block;
+                margin: 0;
+                font-size: 1rem;
+                padding: 0;
+                border: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            /* Links Hidden by Default on Mobile */
+            nav button {
+                display: none;
+                width: 100%;
+                margin-top: 10px;
+                padding: 15px;
+                background: #1e293b;
+                border-left: 4px solid transparent;
+            }
+
+            /* Show Links When Open */
+            nav.open button {
+                display: block;
+            }
+
+            nav div {
+                display: none;
+                /* Keep download button hidden or handle similarly */
+            }
+
+            nav.open div {
+                display: block;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            main {
+                padding: 20px;
+                height: auto;
+                padding-top: 20px;
+            }
+
+            .page {}
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .kpi-row {
+                grid-template-columns: 1fr;
+            }
+
+            .swot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .matrix-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            /* Strategic Bifurcation Stack */
+            #page4 div[style*="display: flex"] {
+                flex-direction: column;
+            }
+
+            /* Timeline Mobile Fix */
+            .timeline {
+                margin: 40px 0;
+                flex-direction: column;
+                padding-left: 20px;
+            }
+
+            .timeline::before {
+                width: 3px;
+                height: 100%;
+                left: 27px;
+                top: 0;
+                right: auto;
+            }
+
+            .t-node {
+                width: 100%;
+                text-align: left;
+                margin-bottom: 30px;
+                padding-left: 40px;
+                display: flex;
+                align-items: center;
+            }
+
+            .t-dot {
+                position: absolute;
+                left: 21px;
+                margin: 0;
+            }
+
+            .t-info {
+                position: relative;
+                width: auto;
+                left: auto;
+                transform: none;
+                text-align: left;
+                font-size: 0.85rem;
+            }
+
+            .t-top,
+            .t-bottom {
+                top: auto;
+                bottom: auto;
+            }
+        }
+
+        /* Merged Page Styles */
+
+        /* Page 1 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --warning-red: #dc2626;
+            --bg-light: #f8fafc;
+            --slate-300: #cbd5e1;
+        }
+
+        .report-page {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* Header Styling */
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--accent-blue);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* KPI Scorecard Widgets */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+
+        .kpi-card {
+            border: 1px solid var(--slate-300);
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .kpi-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        /* Content Sections */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            margin-bottom: 48px;
+            align-items: start;
+        }
+
+        .problem-text h2 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+
+        .callout-box {
+            background-color: #fef2f2;
+            border-left: 4px solid var(--warning-red);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* SVG Triangle Styling */
+        .visual-container {
+            text-align: center;
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .triangle-label {
+            font-size: 12px;
+            font-weight: 700;
+            fill: var(--primary-dark);
+        }
+
+        /* Methodology List */
+        .methodology-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .step-num {
+            background: var(--primary-dark);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .step-content strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-style: italic;
+            color: #64748b;
+            border-top: 1px solid var(--slate-300);
+            padding-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Page 2 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --accent-purple: #7c3aed;
+            --warning-orange: #f59e0b;
+            --bg-light: #f8fafc;
+            --slate-300: #cbd5e1;
+            --slate-600: #475569;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--accent-purple);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* 2x2 Matrix Styling */
+        .matrix-container {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            grid-template-rows: 1fr 1fr 50px;
+            gap: 10px;
+            height: 500px;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .y-axis-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-align: center;
+            font-weight: 700;
+            color: var(--slate-600);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .x-axis-label {
+            grid-column: 2 / 4;
+            text-align: center;
+            align-self: center;
+            font-weight: 700;
+            color: var(--slate-600);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .quadrant {
+            border: 2px solid var(--slate-300);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+
+        .quadrant-title {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--slate-600);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        /* Specific Quadrant Colors */
+        .commodity-zone {
+            background-color: #fff7ed;
+            border-color: var(--warning-orange);
+        }
+
+        .high-stakes {
+            background-color: #f5f3ff;
+        }
+
+        /* Vendor Dots/Clusters */
+        .cluster {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .vendor-tag {
+            background: white;
+            border: 1px solid var(--slate-300);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.05);
+        }
+
+        .highlight-vendor {
+            border-color: var(--warning-orange);
+            color: var(--warning-orange);
+        }
+
+        /* Text Content Layout */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .insight-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .insight-box h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: var(--accent-purple);
+        }
+
+        .bullet-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .bullet-list li {
+            margin-bottom: 12px;
+        }
+
+        .warning-text {
+            color: var(--warning-orange);
+            font-weight: 700;
+        }
+
+        /* Page 3 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --warning-red: #dc2626;
+            --bg-light: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-600: #475569;
+            --success-green: #16a34a;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--accent-blue);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* Matrix Table Styling */
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 0.9rem;
+        }
+
+        .matrix-table th {
+            background-color: var(--primary-dark);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .matrix-table td {
+            padding: 20px;
+            border-bottom: 1px solid var(--slate-200);
+            vertical-align: top;
+        }
+
+        .vendor-name {
+            font-weight: 800;
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+        }
+
+        .hyped-claim {
+            font-style: italic;
+            color: var(--slate-600);
+            border-left: 3px solid var(--slate-200);
+            padding-left: 10px;
+        }
+
+        .reality-check {
+            color: #1e293b;
+        }
+
+        .vaporware-signal {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 8px;
+            background-color: #fef2f2;
+            color: var(--warning-red);
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Opportunity Callouts */
+        .opportunity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .opp-card {
+            border: 1px dashed var(--accent-blue);
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #eff6ff;
+        }
+
+        .opp-card h4 {
+            margin-top: 0;
+            color: var(--accent-blue);
+            font-size: 1rem;
+        }
+
+        /* Page 4 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --platform-blue: #0369a1;
+            --ai-purple: #7e22ce;
+            --warning-red: #be123c;
+            --bg-light: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--platform-blue);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* Bifurcation Diagram */
+        .bifurcation-container {
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .bifurcation-svg {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+        }
+
+        /* Narrative Columns */
+        .narrative-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .narrative-card {
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--slate-200);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .platform-card {
+            border-top: 6px solid var(--platform-blue);
+        }
+
+        .ai-card {
+            border-top: 6px solid var(--ai-purple);
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-bottom: 15px;
+        }
+
+        .platform-tag {
+            background: #e0f2fe;
+            color: var(--platform-blue);
+        }
+
+        .ai-tag {
+            background: #f5f3ff;
+            color: var(--ai-purple);
+        }
+
+        .narrative-card h3 {
+            margin: 0 0 15px 0;
+            color: var(--primary-dark);
+        }
+
+        /* Risks Section */
+        .risk-alert {
+            background-color: #fff1f2;
+            border: 1px solid #fda4af;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .risk-alert h4 {
+            color: var(--warning-red);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Page 5 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --pivot-orange: #f97316;
+            --bg-light: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-700: #334155;
+            --drift-red: #ef4444;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--pivot-orange);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* Timeline Container */
+        .timeline-container {
+            position: relative;
+            margin: 80px 0;
+            height: 300px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--slate-200);
+            transform: translateY(-50%);
+        }
+
+        .timeline-event {
+            position: absolute;
+            top: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 180px;
+            height: 0;
+        }
+
+        .event-dot {
+            width: 16px;
+            height: 16px;
+            background: var(--primary-dark);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--slate-200);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .event-date {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--slate-400);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .event-desc {
+            font-size: 0.85rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Top vs Bottom Positioning */
+        .event-top {
+            position: absolute;
+            bottom: 25px;
+            left: 0;
+            width: 100%;
+        }
+
+        .event-bottom {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 100%;
+        }
+
+        .drift-marker {
+            color: var(--drift-red);
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 100px;
+        }
+
+        .case-study h3 {
+            margin-top: 0;
+            color: var(--pivot-orange);
+            font-size: 1.1rem;
+        }
+
+        .drift-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        /* Page 6 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --success-green: #10b981;
+            --bg-light: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .subtitle {
+            color: var(--success-green);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* Funnel/Playbook Grid */
+        .playbook-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .tactic-card {
+            border: 1px solid var(--slate-200);
+            padding: 25px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .tactic-card h3 {
+            margin-top: 0;
+            color: var(--accent-blue);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tactic-icon {
+            background: var(--accent-blue);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* CAC Efficiency Diagram Placeholder */
+        .funnel-container {
+            text-align: center;
+            background: #f1f5f9;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        /* Comparison Checklist Styling */
+        .checklist {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .checklist h4 {
+            color: #166534;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            align-items: flex-start;
+        }
+
+        .check-mark {
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        /* Page 7 CSS */
+
+        :root {
+            --primary-dark: #0f172a;
+            --accent-blue: #2563eb;
+            --bg-light: #f8fafc;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+            --swot-s: #dcfce7;
+            --swot-w: #fee2e2;
+            --swot-o: #fef9c3;
+            --swot-t: #f1f5f9;
+        }
+
+        .report-page {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            color: #1e293b;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .report-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid var(--primary-dark);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .vendor-section {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--slate-200);
+            padding-bottom: 40px;
+        }
+
+        .vendor-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .vendor-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .vendor-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: var(--accent-blue);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* 7T Table Styling */
+        .t7-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+        }
+
+        .t7-table th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid var(--slate-200);
+            width: 20%;
+        }
+
+        .t7-table td {
+            padding: 10px;
+            border: 1px solid var(--slate-200);
+        }
+
+        /* SWOT Grid */
+        .swot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .swot-box {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .swot-box strong {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .s {
+            background: var(--swot-s);
+        }
+
+        .w {
+            background: var(--swot-w);
+        }
+
+        .o {
+            background: var(--swot-o);
+        }
+
+        .t {
+            background: var(--swot-t);
+        }
+
+        .defense-summary {
+            background: var(--primary-dark);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .defense-summary h3 {
+            margin-top: 0;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <div class="nav-header">
+            <h2>Identity Report 2026</h2>
+            <button class="mobile-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+        <button onclick="showPage(1)" id="btn1" class="active">1. Executive Summary</button>
+        <button onclick="showPage(2)" id="btn2">2. Strategic Heatmap</button>
+        <button onclick="showPage(3)" id="btn3">3. Rhetoric vs Reality</button>
+        <button onclick="showPage(4)" id="btn4">4. Strategic Bifurcation</button>
+        <button onclick="showPage(5)" id="btn5">5. Messaging Drift</button>
+        <button onclick="showPage(6)" id="btn6">6. CMO Playbook</button>
+        <button onclick="showPage(7)" id="btn7">7. SWOT & Defense</button>
+        <div style="margin-top: auto;">
+            <button onclick="downloadSelf()"
+                style="background: var(--blue); color: white; width: 100%; text-align: center;">Download .HTML
+                Report</button>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <section id="page1" class="page active">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Confidential Internal Report: 2026 Identity Security</span>
+                    <h1>Executive Summary & Forensic Framework</h1>
+                </header>
+
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span class="kpi-number">280</span>
+                        <span class="kpi-label">Active Ad Variations (Saviynt)</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-number">>50%</span>
+                        <span class="kpi-label">Market Commodity Cluster</span>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-number">96%</span>
+                        <span class="kpi-label">Unverified Privilege Claims</span>
+                    </div>
+                </div>
+
+                <div class="grid-container">
+                    <div class="problem-text">
+                        <h2>The High-Stakes Messaging Gap</h2>
+                        <p>High-growth startups in identity security are saturating the market with bold "AI-driven"
+                            claims and
+                            sweeping platform promises. As a CMO under pressure to prove ROI, you must distinguish
+                            between
+                            market reality and "vaporware."</p>
+
+                        <div class="callout-box">
+                            <strong>Strategic Anxiety:</strong> When competitors amplify the same buzzwords (AI, Zero
+                            Trust,
+                            Autonomous), differentiation evaporates, and Customer Acquisition Cost (CAC) skyrockets due
+                            to
+                            indistinguishable messaging.
+                        </div>
+
+                        <p>This report identifies where marketing slogans have drifted from actual product capabilities,
+                            allowing you to craft a message that cuts through the noise with evidence-based
+                            differentiation.</p>
+                    </div>
+
+                    <div class="visual-container">
+                        <svg viewBox="0 0 300 300" width="100%" height="auto">
+                            <path d="M150 40 L260 230 L40 230 Z" fill="none" stroke="#2563eb" stroke-width="2" />
+
+                            <circle cx="150" cy="40" r="6" fill="#2563eb" />
+                            <circle cx="260" cy="230" r="6" fill="#2563eb" />
+                            <circle cx="40" cy="230" r="6" fill="#2563eb" />
+
+                            <text x="150" y="25" text-anchor="middle" class="triangle-label">AD SURVEILLANCE</text>
+                            <text x="265" y="245" text-anchor="start" class="triangle-label">DOCUMENTATION</text>
+                            <text x="35" y="245" text-anchor="end" class="triangle-label">PRODUCT UPDATES</text>
+
+                            <circle cx="150" cy="155" r="35" fill="#dc2626" fill-opacity="0.15" />
+                            <text x="150" y="155" text-anchor="middle" font-size="10" font-weight="900"
+                                fill="#dc2626">THE
+                                GAP</text>
+                        </svg>
+                        <p style="font-size: 11px; font-weight: 600; margin-top: 10px; color: #475569;">FORENSIC
+                            TRIANGULATION
+                            FRAMEWORK</p>
+                    </div>
+                </div>
+
+                <div class="methodology-box">
+                    <h2>The Three-Pillar Methodology</h2>
+
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <strong>Ad Surveillance</strong>
+                            Tracking LinkedIn and Meta Ad Libraries to log headlines and slogans. This captures exactly
+                            what
+                            competitors are broadcasting to the market at scale.
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <strong>Historical Drift Check</strong>
+                            Analyzing changes in positioning over time using archives. This exposes "trend-chasing"
+                            where
+                            vendors pivot to new buzzwords without underlying tech changes.
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <strong>Changelog & Documentation Verification</strong>
+                            Cross-referencing claims against product release notes and GitHub repos. We look for
+                            concrete
+                            evidence of the "AI breakthroughs" promised in ads.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-note">
+                    This analysis focuses on 15 identity security players to identify white space for substantiated,
+                    high-ROI
+                    messaging.
+                </div>
+            </div>
+        </section>
+
+        <section id="page2" class="page">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Section 2: Market Saturation Analysis</span>
+                    <h1>Strategic Anxiety Heatmap</h1>
+                </header>
+
+                <p>Identity security vendors are clumping in a high-noise, moderate-stakes cluster. When many
+                    competitors
+                    amplify the same buzzwords, differentiation evaporates, leading to <strong>indistinguishable
+                        messaging</strong> and <strong>commoditized CAC</strong>.</p>
+
+                <div class="matrix-container">
+                    <div class="y-axis-label">Messaging Noise (Ad Volume & Frequency)</div>
+
+                    <div class="quadrant">
+                        <span class="quadrant-title">Niche Agitators</span>
+                    </div>
+
+                    <div class="quadrant high-stakes">
+                        <span class="quadrant-title">Market Leaders / Overextended</span>
+                        <div class="cluster">
+                            <span class="vendor-tag">Saviynt</span>
+                            <span class="vendor-tag">Microsoft</span>
+                        </div>
+                    </div>
+
+                    <div class="y-axis-label" style="opacity:0">Placeholder</div>
+
+                    <div class="quadrant">
+                        <span class="quadrant-title">Legacy / Quiet Tech</span>
+                    </div>
+
+                    <div class="quadrant commodity-zone">
+                        <span class="quadrant-title">The Commodity Zone (High Noise Cluster)</span>
+                        <div class="cluster">
+                            <span class="vendor-tag highlight-vendor">ConductorOne</span>
+                            <span class="vendor-tag highlight-vendor">Apono</span>
+                            <span class="vendor-tag highlight-vendor">Nudge Security</span>
+                            <span class="vendor-tag">Saviynt (AI Messaging)</span>
+                            <span class="vendor-tag">+ 10 Others</span>
+                        </div>
+                    </div>
+
+                    <div class="x-axis-label">Solution Stakes (Criticality of Problem)</div>
+                </div>
+
+
+
+                <div class="analysis-grid">
+                    <div class="analysis-text">
+                        <h3>Why Vendors Sound Alike</h3>
+                        <p>Over half the field is currently competing on identical value propositions: "AI-driven
+                            identity,"
+                            "autonomous security," and "zero standing privilege." [cite: 34, 37]</p>
+                        <ul class="bullet-list">
+                            <li><strong>Slogan Overlap:</strong> ConductorOne, Apono, and Saviynt all emphasize
+                                AI/Automation in
+                                their primary taglines, blurring together for prospective buyers. [cite: 40, 41]</li>
+                            <li><strong>Differentiation Failure:</strong> If five vendors all claim "we automate
+                                identity with
+                                AI," none stand out, forcing prospects to choose based on price or existing
+                                relationships.
+                                [cite: 42, 43]</li>
+                            <li><strong>The CAC Penalty:</strong> Indistinguishable messages attract unqualified leads
+                                drawn by
+                                hype rather than real pain points, inflating the cost per lead (CPL). [cite: 43, 46, 61]
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="insight-box">
+                        <h3>Forensic Insight: "Strategic Anxiety"</h3>
+                        <p>Vendors flock to buzzwords like "Unified Platform" or "AI" out of fear of missing the latest
+                            narrative. [cite: 56, 191]</p>
+                        <p class="warning-text">Evidence of Overextension:</p>
+                        <p>Saviynt currently runs <strong>280 ad variations</strong> across multiple themes (Cloud, AI,
+                            IGA,
+                            PAM), suggesting a fragmented story rather than a single coherent narrative. [cite: 10, 45,
+                            145]</p>
+                        <p>Apono shifted its core positioning from "Cloud Governance" to "Zero Trust AI" within a single
+                            year,
+                            signaling high trend-responsiveness. [cite: 97, 118]</p>
+                    </div>
+                </div>
+
+                <blockquote
+                    style="margin-top: 40px; border-left: 4px solid var(--accent-purple); padding-left: 20px; font-style: italic; color: var(--slate-600);">
+                    "The risk for those in the commodity zone is high spend, low yield. When your message is
+                    indistinguishable,
+                    you essentially bid against rivals on the same words and audience." [cite: 43, 44]
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="page3" class="page">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Section 3: Competitive Teardown</span>
+                    <h1>Rhetoric vs. Reality Matrix</h1>
+                </header>
+
+                <p>Marketing slogans in the identity sector often drift far from actual capabilities. This matrix
+                    juxtaposes
+                    leading vendors' public messaging against their product documentation and changelogs[cite: 9].</p>
+
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Vendor</th>
+                            <th style="width: 35%;">Hyped Claim (Rhetoric)</th>
+                            <th style="width: 45%;">Observed Reality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="vendor-name">Saviynt</td>
+                            <td class="hyped-claim">
+                                "AI-driven Identity Cloud"[cite: 25]; "Up to 60% faster fulfillment with Saviynt
+                                Intelligence"[cite: 10].
+                            </td>
+                            <td class="reality-check">
+                                Release notes show new features for non-human IDs and policy workflows[cite: 10].
+                                However, there
+                                is <strong>no documented baseline</strong> or proof for the 60% improvement claim[cite:
+                                10, 25].
+                                <span class="vaporware-signal">Vaporware Flag: Lack of Disclosure</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="vendor-name">ConductorOne</td>
+                            <td class="hyped-claim">
+                                "Autonomous Identity Security"[cite: 12]; "Put your UARs on autopilot"[cite: 12].
+                            </td>
+                            <td class="reality-check">
+                                Ads showcase a <strong>complex admin UI</strong> with toggles and approval buttons[cite:
+                                13,
+                                25]. The product requires configuration and human intervention, contradicting the
+                                "hands-off"
+                                narrative[cite: 13, 25].
+                                <span class="vaporware-signal">Vaporware Flag: UI Discrepancy</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="vendor-name">Apono</td>
+                            <td class="hyped-claim">
+                                "Zero Standing Privileges" with AI[cite: 16]; "Eliminates 96% of excessive
+                                privileges"[cite:
+                                16].
+                            </td>
+                            <td class="reality-check">
+                                Changelogs indicate <strong>incremental improvements</strong> (CLI fixes, new
+                                connectors) but
+                                show no breakthroughs in AI-driven dynamic privilege tech[cite: 17, 25].
+                                <span class="vaporware-signal">Vaporware Flag: Incrementalism vs. Hype</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="vendor-name">Nudge Security</td>
+                            <td class="hyped-claim">
+                                "Discover every SaaS and AI app ever created" in 5 minutes[cite: 20, 21].
+                            </td>
+                            <td class="reality-check">
+                                While strong in SaaS discovery, promising <strong>instant omniscience</strong> is an
+                                overreach[cite: 21, 22]. Updates show steady coverage additions rather than a "magic"
+                                discovery
+                                engine[cite: 21, 25].
+                                <span class="vaporware-signal">Vaporware Flag: Overreach on Speed</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="opportunity-grid">
+                    <div class="opp-card">
+                        <h4>Differentiate via Specificity</h4>
+                        <p>If a rival trumpets "AI-driven" results without detail, contrast with concrete features like
+                            "one-click deactivation of orphaned accounts"[cite: 29]. Use benchmark stats with disclosed
+                            context
+                            to pierce through their noise[cite: 29, 148].</p>
+                    </div>
+                    <div class="opp-card">
+                        <h4>Exploit Documented Gaps</h4>
+                        <p>Competitors' own docs often confirm these gaps[cite: 30]. Position your messaging as the
+                            "truth-teller" by offering clarity and evidence where rival ads remain vague[cite: 165,
+                            168].</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 0.85rem; color: var(--slate-600);">
+                    <em>Note: This matrix encapsulates data gathered from active LinkedIn ad variations, historical
+                        website
+                        archives, and 2025 release logs[cite: 5, 23, 114].</em>
+                </p>
+            </div>
+        </section>
+
+        <section id="page4" class="page">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Section 4: Market Inflection</span>
+                    <h1>The Bifurcation Point Framework</h1>
+                </header>
+
+                <p>Identity security is at a crossroads. Prospects are hearing two distinct visions of the future[cite:
+                    101].
+                    Success depends on planting your flag on the side that aligns with your actual product
+                    strengths[cite: 100].
+                </p>
+
+                <div class="bifurcation-container">
+                    <svg viewBox="0 0 800 240" class="bifurcation-svg">
+                        <rect x="10" y="100" width="180" height="40" rx="5" fill="#f1f5f9" stroke="#cbd5e1"
+                            stroke-width="2" />
+                        <text x="100" y="125" text-anchor="middle" font-size="14" font-weight="700"
+                            fill="#334155">Legacy
+                            Identity</text>
+
+                        <path d="M190 120 C 250 120, 250 50, 350 50" fill="none" stroke="#0369a1" stroke-width="3"
+                            stroke-dasharray="5,5" />
+                        <path d="M190 120 C 250 120, 250 190, 350 190" fill="none" stroke="#7e22ce" stroke-width="3"
+                            stroke-dasharray="5,5" />
+
+                        <rect x="350" y="30" width="350" height="40" rx="5" fill="#e0f2fe" stroke="#0369a1"
+                            stroke-width="2" />
+                        <text x="525" y="55" text-anchor="middle" font-size="14" font-weight="700"
+                            fill="#0369a1">Unified
+                            Identity Platforms (Consolidation)</text>
+
+                        <rect x="350" y="170" width="350" height="40" rx="5" fill="#f5f3ff" stroke="#7e22ce"
+                            stroke-width="2" />
+                        <text x="525" y="195" text-anchor="middle" font-size="14" font-weight="700"
+                            fill="#7e22ce">"AI-Agent
+                            Native" Infrastructure (Automation)</text>
+                    </svg>
+                    <p style="font-size: 0.75rem; color: #64748b; font-weight: 600;">VISUALIZING THE STRATEGIC FORK IN
+                        THE ROAD
+                    </p>
+                </div>
+
+                <div class="narrative-grid">
+                    <div class="narrative-card platform-card">
+                        <span class="card-tag platform-tag">The Consolidation Play</span>
+                        <h3>Unified Identity Platforms</h3>
+                        <p>Pitches the all-in-one consolidation of IGA, PAM, and CIEM under one roof[cite: 66, 68].</p>
+                        <ul style="font-size: 0.85rem; padding-left: 20px;">
+                            <li><strong>Core Promise:</strong> Integration and "single-pane-of-glass" control[cite: 69].
+                            </li>
+                            <li><strong>Key Vendor:</strong> Saviynt ("One Converged Platform")[cite: 67].</li>
+                            <li><strong>The Hook:</strong> Urging customers to leave "legacy" point products
+                                behind[cite: 69].
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="narrative-card ai-card">
+                        <span class="card-tag ai-tag">The Disruptor Play</span>
+                        <h3>"AI-Agent Native" Infrastructure</h3>
+                        <p>Focuses on intelligent agents and policies that dynamically adjust via AI in real-time[cite:
+                            73, 74].
+                        </p>
+                        <ul style="font-size: 0.85rem; padding-left: 20px;">
+                            <li><strong>Core Promise:</strong> Self-driving identity controls embedded in
+                                infrastructure[cite:
+                                75].</li>
+                            <li><strong>Key Vendors:</strong> ConductorOne ("Autonomous") and Apono (JIT for AI
+                                agents)[cite:
+                                75].</li>
+                            <li><strong>The Hook:</strong> Traditional IAM is too manual/static for modern cloud
+                                needs[cite:
+                                75].</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="risk-alert">
+                    <h4>The High Cost of Narrative Misfit</h4>
+                    <p style="font-size: 0.9rem; margin-bottom: 0;">
+                        <strong>Platform Risk:</strong> Claiming "complete control" is rhetorically risky; if any one
+                        area
+                        underperforms, buyers view the entire brand as an overclaim[cite: 70, 85].<br><br>
+                        <strong>AI Risk:</strong> "AI-native" positioning can backfire as vaporware if the automation
+                        still
+                        requires significant manual setup or human UI intervention[cite: 78, 79].
+                    </p>
+                </div>
+
+                <p style="margin-top: 30px; font-style: italic; color: var(--slate-700);">
+                    "Straddling or oscillating between these narratives is the worst path. Consistency builds brand
+                    trust;
+                    frenetic repositioning burns budget for little gain[cite: 98, 99]."
+                </p>
+            </div>
+        </section>
+
+        <section id="page5" class="page">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Section 5: Historical Analysis</span>
+                    <h1>Messaging-Product Drift Tracker</h1>
+                </header>
+
+                <p>A vendor's history reveals their strategic anxiety. By tracking slogan shifts against actual
+                    product releases, we identify who is leading the market and who is merely chasing the latest hype.
+                </p>
+
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+
+                    <div class="timeline-event" style="left: 10%;">
+                        <div class="event-top">
+                            <span class="event-date">JAN 2024</span>
+                            <span class="event-desc">Apono: "Cloud Access Governance"</span>
+                        </div>
+                        <div class="event-dot"></div>
+                    </div>
+
+                    <div class="timeline-event" style="left: 30%;">
+                        <div class="event-dot" style="background: var(--accent-blue);"></div>
+                        <div class="event-bottom">
+                            <span class="event-date">JUN 2024</span>
+                            <span class="event-desc">Product: New CLI & Connectors</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-event" style="left: 60%;">
+                        <div class="event-top">
+                            <span class="event-date">JAN 2025</span>
+                            <span class="drift-marker">Strategic Pivot</span>
+                            <span class="event-desc">Apono: "Zero Trust AI Agents"</span>
+                        </div>
+                        <div class="event-dot" style="background: var(--drift-red);"></div>
+                    </div>
+
+                    <div class="timeline-event" style="left: 90%;">
+                        <div class="event-dot" style="background: var(--slate-400);"></div>
+                        <div class="event-bottom">
+                            <span class="event-date">MID 2025</span>
+                            <span class="event-desc">Product: Routine Bug Fixes</span>
+                            <span class="drift-marker" style="display:block; margin-top:5px;">Vaporware Gap
+                                Identified</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="case-study">
+                    <h3>Forensic Focus: Apono's Tactical Shift</h3>
+                    <p>Apono provides a textbook example of "Historical Drift." Within one year, their core messaging
+                        evolved
+                        from functional cloud governance to futuristic AI-agent jargon.</p>
+
+                    <div class="drift-summary">
+                        <div>
+                            <strong>The Rhetoric:</strong>
+                            <p style="font-size: 0.9rem;">LinkedIn ads now promise "effortless elimination of 96% of
+                                excessive
+                                privileges" using AI-powered control.</p>
+                        </div>
+                        <div>
+                            <strong>The Reality:</strong>
+                            <p style="font-size: 0.9rem;">Release logs from the same period show incremental updates
+                                (CLI
+                                enhancements, bug fixes) with no recorded AI engine breakthroughs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <h3>Exploiting the Drift</h3>
+                    <ul style="font-size: 0.95rem; color: var(--slate-700);">
+                        <li><strong>Identify Trend-Chasing:</strong> When a competitor's tagline evolves faster than
+                            their
+                            GitHub repo, they are vulnerable to "proof-of-value" challenges.</li>
+                        <li><strong>Stay Steady:</strong> You can exploit strategic anxiety by staying consistent and
+                            specific
+                            where rivals are zig-zagging to follow trends.</li>
+                        <li><strong>Time Your Counter-Messaging:</strong> Plan your campaigns to coincide with the
+                            moments when
+                            the gap between a competitor's hype and their product is widest.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="page6" class="page">
+            <div class="report-page">
+                <header>
+                    <span class="subtitle">Section 6: Tactical Execution</span>
+                    <h1>The CMO Playbook for 2026</h1>
+                </header>
+
+                <p>The goal is not to out-spend the competition’s noise, but to out-educate and out-proof them. By
+                    focusing on
+                    substance, you capture the "analytical buyer" who is fatigued by grandiose claims.</p>
+
+                <div class="funnel-container">
+
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 15px; font-weight: 600;">TARGETED MESSAGING
+                        VS. THE
+                        "BROAD NET" WASTE</p>
+                </div>
+
+                <div class="playbook-grid">
+                    <div class="tactic-card">
+                        <h3><span class="tactic-icon">1</span> Out-Message via Specificity</h3>
+                        <p>While rivals say "AI-powered," define exactly what your technology does. Use concrete
+                            features—like
+                            "one-click deactivation"—to ground your narrative in reality.</p>
+                        <ul style="font-size: 0.85rem; padding-left: 20px;">
+                            <li>Replace vague % gains with median remediation times.</li>
+                            <li>Cite specific methodologies for any hero claims.</li>
+                        </ul>
+                    </div>
+
+                    <div class="tactic-card">
+                        <h3><span class="tactic-icon">2</span> Lower CAC with Persona Focus</h3>
+                        <p>Stop chasing every trending persona. Narrow your spend on the one primary pain point where
+                            your
+                            product is undeniably stronger than the "commodity cluster."</p>
+                        <ul style="font-size: 0.85rem; padding-left: 20px;">
+                            <li>Eliminate low-intent clicks from broad AI hype.</li>
+                            <li>Improve relevance to lower Customer Acquisition Cost.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <h4>Truth-Teller Checklist: Questions to Ask Your Identity Vendor</h4>
+                    <p style="font-size: 0.9rem; color: #166534; margin-bottom: 20px;">Use this comparison template as a
+                        lead
+                        magnet to expose rival weaknesses tactfully:</p>
+
+                    <div class="checklist-item">
+                        <span class="check-mark">✓</span>
+                        <span>Does your "autonomous" solution require a manual admin UI for 90% of tasks?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-mark">✓</span>
+                        <span>What is the specific data baseline for your "60% improvement" claims?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-mark">✓</span>
+                        <span>Is your "AI engine" documented in your public release logs or changelogs?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-mark">✓</span>
+                        <span>Can you demonstrate "Zero Standing Privilege" without a complex beta setup?</span>
+                    </div>
+                </div>
+
+                <p
+                    style="margin-top: 40px; border-left: 4px solid var(--success-green); padding-left: 20px; font-style: italic; color: var(--slate-700);">
+                    "Leadership sees that you're targeting weaknesses with data on your side, not gambling on trendy
+                    buzzwords.
+                    This turns your marketing spend into an investable story."
+                </p>
+            </div>
+        </section>
+
+        <section id="page7" class="page">
+            <div class="report-page">
+                <header>
+                    <span
+                        style="color: var(--accent-blue); font-weight: 700; text-transform: uppercase; font-size: 0.8rem;">Strategic
+                        Tactical Audit</span>
+                    <h1>Comprehensive 7T & SWOT Scorecards</h1>
+                </header>
+
+
+
+                <div class="vendor-section">
+                    <div class="vendor-header">
+                        <span class="vendor-title">Saviynt</span>
+                        <span class="vendor-tag">Unified Platform Incumbent</span>
+                    </div>
+
+                    <table class="t7-table">
+                        <tr>
+                            <th>Product</th>
+                            <td>Converged IGA, PAM, and CIEM; focus on NHI governance.</td>
+                        </tr>
+                        <tr>
+                            <th>Pricing</th>
+                            <td>Enterprise-level, likely high-ticket with long sales cycles.</td>
+                        </tr>
+                        <tr>
+                            <th>Communication</th>
+                            <td>Multiple taglines (AI-powered, Unified Cloud) creating narrative noise.</td>
+                        </tr>
+                        <tr>
+                            <th>Distribution</th>
+                            <td>Global reach targeting CISO, ERP admins, and DevOps.</td>
+                        </tr>
+                        <tr>
+                            <th>Services</th>
+                            <td>Heavy emphasis on migration offers and scale.</td>
+                        </tr>
+                        <tr>
+                            <th>Brand</th>
+                            <td>Positioned as THE Identity Cloud; "Converge to Control" slogan.</td>
+                        </tr>
+                        <tr>
+                            <th>Incentives</th>
+                            <td>Heavy use of personalized demo CTAs across 280+ ad variations.</td>
+                        </tr>
+                    </table>
+
+                    <div class="swot-grid">
+                        <div class="swot-box s"><strong>Strengths</strong> Breadth of platform (IGA, PAM, CIEM)
+                            reduces tool sprawl.</div>
+                        <div class="swot-box w"><strong>Weaknesses</strong> Narrative overextension; 60% gain claims
+                            lack disclosed context.</div>
+                        <div class="swot-box o"><strong>Opportunities</strong> Contrast their broad noise with a
+                            focused, evidence-backed story.</div>
+                        <div class="swot-box t"><strong>Threats</strong> Smaller, nimble AI-native competitors
+                            piercing their "all-in-one" claim.</div>
+                    </div>
+                </div>
+
+                <div class="vendor-section">
+                    <div class="vendor-header">
+                        <span class="vendor-title">ConductorOne</span>
+                        <span class="vendor-tag">AI-Native Disruptor</span>
+                    </div>
+
+                    <table class="t7-table">
+                        <tr>
+                            <th>Product</th>
+                            <td>Access governance focusing on "autonomous" identity operations.</td>
+                        </tr>
+                        <tr>
+                            <th>Pricing</th>
+                            <td>SaaS-model; messaging targets efficiency over legacy cost.</td>
+                        </tr>
+                        <tr>
+                            <th>Communication</th>
+                            <td>Aggressive "autopilot" rhetoric vs. visible admin dashboard reality.</td>
+                        </tr>
+                        <tr>
+                            <th>Distribution</th>
+                            <td>Direct digital sales; heavy emphasis on high-intent clicks.</td>
+                        </tr>
+                        <tr>
+                            <th>Services</th>
+                            <td>Emphasis on self-service and quick setup.</td>
+                        </tr>
+                        <tr>
+                            <th>Brand</th>
+                            <td>"Autonomous Identity Security"; positioned as a modern IAM alternative.</td>
+                        </tr>
+                        <tr>
+                            <th>Incentives</th>
+                            <td>Curiosity-driven AI hype used to attract top-of-funnel traffic.</td>
+                        </tr>
+                    </table>
+
+                    <div class="swot-grid">
+                        <div class="swot-box s"><strong>Strengths</strong> Developer-friendly, API-first approach to
+                            automation.</div>
+                        <div class="swot-box w"><strong>Weaknesses</strong> Visible UI in ads contradicts
+                            "hands-off" autonomy claims.</div>
+                        <div class="swot-box o"><strong>Opportunities</strong> Challenge their "automation" with
+                            calls for tangible proof.</div>
+                        <div class="swot-box t"><strong>Threats</strong> "AI fatigue" from buyers tired of
+                            exaggerated automation claims.</div>
+                    </div>
+                </div>
+
+                <div class="vendor-section">
+                    <div class="vendor-header">
+                        <span class="vendor-title">Apono</span>
+                        <span class="vendor-tag">Zero-Trust Niche</span>
+                    </div>
+
+                    <table class="t7-table">
+                        <tr>
+                            <th>Product</th>
+                            <td>Just-in-time access for humans and AI agents.</td>
+                        </tr>
+                        <tr>
+                            <th>Pricing</th>
+                            <td>Niche pricing based on dynamic access control.</td>
+                        </tr>
+                        <tr>
+                            <th>Communication</th>
+                            <td>Rapid shift from "Cloud Access" to "Zero Trust AI" jargon.</td>
+                        </tr>
+                        <tr>
+                            <th>Distribution</th>
+                            <td>Cloud-native focus, integrating with modern CI/CD stacks.</td>
+                        </tr>
+                        <tr>
+                            <th>Services</th>
+                            <td>Dynamic privilege elimination focus.</td>
+                        </tr>
+                        <tr>
+                            <th>Brand</th>
+                            <td>"AI-powered" access that "eliminates 96% of excessive privileges".</td>
+                        </tr>
+                        <tr>
+                            <th>Incentives</th>
+                            <td>Trend-responsive messaging designed to capture FOMO.</td>
+                        </tr>
+                    </table>
+
+                    <div class="swot-grid">
+                        <div class="swot-box s"><strong>Strengths</strong> Strong focus on modern Just-In-Time (JIT)
+                            access problems.</div>
+                        <div class="swot-box w"><strong>Weaknesses</strong> Slogan drift; product changelogs show
+                            only incremental updates.</div>
+                        <div class="swot-box o"><strong>Opportunities</strong> Outshine them with consistent,
+                            present-tense credibility.</div>
+                        <div class="swot-box t"><strong>Threats</strong> Perceived as "vaporware" if product doesn't
+                            match 96% reduction hype.</div>
+                    </div>
+                </div>
+
+                <div class="vendor-section">
+                    <div class="vendor-header">
+                        <span class="vendor-title">Nudge Security</span>
+                        <span class="vendor-tag">SaaS Visibility Player</span>
+                    </div>
+
+                    <table class="t7-table">
+                        <tr>
+                            <th>Product</th>
+                            <td>SaaS app and AI risk monitoring focusing on shadow IT discovery.</td>
+                        </tr>
+                        <tr>
+                            <th>Pricing</th>
+                            <td>Low-friction onboarding with "no credit card" instant access trial.</td>
+                        </tr>
+                        <tr>
+                            <th>Communication</th>
+                            <td>Extreme speed claims like "Deploy in 5 minutes... Discover all SaaS and AI apps".</td>
+                        </tr>
+                        <tr>
+                            <th>Distribution</th>
+                            <td>Casts a very wide net touching CISOs, IT admins, and compliance.</td>
+                        </tr>
+                        <tr>
+                            <th>Services</th>
+                            <td>Automated governance at scale with effortless inventory visibility.</td>
+                        </tr>
+                        <tr>
+                            <th>Brand</th>
+                            <td>Positioned as "Workforce-driven AI" for instant total cloud visibility.</td>
+                        </tr>
+                        <tr>
+                            <th>Incentives</th>
+                            <td>Low-friction trial incentives to back ease-of-use messaging.</td>
+                        </tr>
+                    </table>
+
+                    <div class="swot-grid">
+                        <div class="swot-box s"><strong>Strengths</strong> Strong SaaS discovery and low-friction
+                            trial incentive.</div>
+                        <div class="swot-box w"><strong>Weaknesses</strong> "Magic omniscience" claims for instant
+                            discovery verge on overreach.</div>
+                        <div class="swot-box o"><strong>Opportunities</strong> Carve out a specific niche rather than a
+                            generic "catch-all" approach to lower CAC.</div>
+                        <div class="swot-box t"><strong>Threats</strong> High volume of low-intent clicks from broad
+                            persona targeting inflating CAC.</div>
+                    </div>
+                </div>
+
+                <div class="defense-summary">
+                    <h3>Strategic Budget Defense</h3>
+                    <p>Armed with these 7T profiles, you can justify marketing spend by showing a clear plan to beat
+                        rivals on
+                        substance:</p>
+                    <ul style="font-size: 0.9rem; padding-left: 20px;">
+                        <li><strong>Exploit Slogan Overlap:</strong> Point out the "Commodity Zone" to leadership to
+                            justify a more focused, differentiated campaign.</li>
+                        <li><strong>Reduce CAC:</strong> Avoid the "broad net" trap of Nudge and Saviynt by
+                            targeting specific pain points with evidence-based content.</li>
+                        <li><strong>Build Trust:</strong> Position as the "truth-teller" in the market by providing
+                            specific metrics where others use buzzwords.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function showPage(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('page' + num).classList.add('active');
+            document.getElementById('btn' + num).classList.add('active');
+            // Close mobile menu on selection
+            document.getElementById('navbar').classList.remove('open');
+        }
+        function toggleMenu() {
+            document.getElementById('navbar').classList.toggle('open');
+        }
+        function downloadSelf() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'Identity_Security_Report_2026.html';
+            a.click();
+        }
+    </script>
+
+</body>
+
+</html>
